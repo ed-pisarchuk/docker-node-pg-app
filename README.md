@@ -24,6 +24,7 @@ GET http://localhost:3000/device/:id
 
 Запрос на создание устройства:
 POST http://localhost:3000/device/
+
 Пример тела запроса:
 {
     "user_email": "ivanov_p@gmail.com",
