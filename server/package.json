@@ -1,0 +1,20 @@
+{
+  "name": "docker_web_app",
+  "version": "1.0.0",
+  "description": "node.js on docker",
+  "author": "ed_pisarchuk@mail.ru",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1",
+    "sequelize": "^6.4.0",
+    "pg": "^8.5.1",
+    "morgan": "~1.9.1",
+    "express-json-errors": "^1.0.5"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
+  }
+}
