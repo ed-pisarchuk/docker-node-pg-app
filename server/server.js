@@ -5,7 +5,7 @@ const indexRouter = require('./routes/index')
 const errorHandler = require('express-json-errors')
 
 // константы
-const port = 3002;
+const port = 3000;
 const host = '0.0.0.0';
 
 // приложение
