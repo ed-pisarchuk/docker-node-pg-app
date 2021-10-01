@@ -5,14 +5,20 @@
   "author": "ed_pisarchuk@mail.ru",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha --timeout 10000"
   },
   "dependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chai-like": "^1.1.1",
+    "chai-things": "^0.2.0",
     "express": "^4.16.1",
-    "sequelize": "^6.4.0",
-    "pg": "^8.5.1",
+    "express-json-errors": "^1.0.5",
+    "mocha": "^2.4.5",
     "morgan": "~1.9.1",
-    "express-json-errors": "^1.0.5"
+    "pg": "^8.5.1",
+    "sequelize": "^6.4.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"

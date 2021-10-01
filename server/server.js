@@ -1,6 +1,6 @@
 'use strict';
 
-const express = require('express');
+const express = require('express')
 const indexRouter = require('./routes/index')
 const errorHandler = require('express-json-errors')
 
@@ -9,16 +9,16 @@ const port = 3000;
 const host = '0.0.0.0';
 
 // приложение
-const app = express();
+const app = express()
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With")
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
   next()
 })
 app.use(errorHandler())
-app.use(express.json({limit: '100mb', extended: true}));
-app.use(express.urlencoded({limit: '100mb', extended: true}));
+app.use(express.json({limit: '100mb', extended: true}))
+app.use(express.urlencoded({limit: '100mb', extended: true}))
 
 app.use('/',  indexRouter)
 
@@ -31,5 +31,7 @@ app.use((req, res, next) => {
 })
 
 app.listen(port, host);
-console.log(`running on http://${host}:${port}`);
+console.log(`running on http://${host}:${port}`)
+
+module.exports = app
 
