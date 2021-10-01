@@ -2,8 +2,8 @@ module.exports = {
     username: "postgres",
     password: 'docker',
     database: 'nav_test',
-    host: 'localhost' || 'db',
-    port: 5435 || 5432,
+    host: 'db',
+    port: 5432,
     dialect: "postgres",
     define: {
         charset: 'utf8',
