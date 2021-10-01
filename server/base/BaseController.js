@@ -1,6 +1,5 @@
 class BaseController {
     service
-    defaultErrorFields = ['code', 'message', 'description']
 
     setService(service) {
         this.service = service
@@ -10,29 +9,11 @@ class BaseController {
         result.then(results => {
             res.json(results)
         }).catch(err => {
-            console.error(new Date(), err)
-            console.log(this.resultError(err))
-            res.error(this.resultError(err))
-        })
-    }
-
-    resultError(error, fields) {
-        fields = fields || this.defaultErrorFields
-        let errorObject = {}
-        fields.forEach(function (item) {
-            switch (item) {
-                case 'code':
-                    errorObject[item] = error[item] || 400
-                    break
-                case 'message':
-                    errorObject.title = error[item] || null
-                    break
-                default:
-                    errorObject[item] = error[item] || null
-                    break
+            if (process.env.ERROR_LOGGING !== "false") {
+                console.error(new Date(), err)
             }
+            res.error(err instanceof Array ? err.map(item => item.valueOf()) : err.valueOf())
         })
-        return errorObject
     }
 
     show(req, res, next) {
@@ -44,7 +25,6 @@ class BaseController {
     }
 
     store(req, res, next) {
-        console.log(req)
         this.prepareResults(this.service.createItem(req.body, req.user), res)
     }
 

@@ -1,3 +1,4 @@
+const ApiError = require('../errors/ApiError')
 const models = require('../models')
 const BaseService = require('../base/BaseService')
 
@@ -11,8 +12,8 @@ class DeviceService extends BaseService {
         let params = {
             attributes: ["id", "name", "mac",
                 [models.sequelize.literal('"deviceType".name'), "type"],
-                [models.sequelize.literal('"user".name'), "user_name"],
-                [models.sequelize.literal('"user".email'), "user_email"]
+                [models.sequelize.literal('"user".name'), "owner_name"],
+                [models.sequelize.literal('"user".email'), "owner_email"]
             ],
             include: [{model: models.deviceType, attributes: []}, {model: models.user, attributes: []}]
         }
@@ -20,13 +21,34 @@ class DeviceService extends BaseService {
         return models.device.findAll(params)
     }
 
+    updateItem(id, data) {
+        const updatedFields = ["mac", "type_id", "name"]
+        let onChange = {}
+        for (let item of updatedFields) {
+            if (data[item]) onChange[item] = data[item]
+        }
+
+        return models.device.update(onChange, {where: {id: id}, limit: 1}).then(async rowUpdated => {
+            if (rowUpdated[0] === 1) {
+                const device = await this.getById(id)
+                return Promise.resolve({
+                    successful: true,
+                    message: "Устройство успешно изменено!",
+                    device: device
+                })
+            } else {
+                return Promise.reject(new Error("Не удалось изменить устройство!"))
+            }
+        })
+    }
+
     getById(id) {
         let params = {
             where: {id: id},
             attributes: ["id", "name", "mac",
                 [models.sequelize.literal('"deviceType".name'), "type"],
-                [models.sequelize.literal('"user".name'), "user_name"],
-                [models.sequelize.literal('"user".email'), "user_email"]
+                [models.sequelize.literal('"user".name'), "owner_name"],
+                [models.sequelize.literal('"user".email'), "owner_email"]
             ],
             include: [{model: models.deviceType, attributes: []}, {model: models.user, attributes: []}]
         }
@@ -46,7 +68,7 @@ class DeviceService extends BaseService {
                             device: deviceData
                         })
                     } else {
-                        throw new Error("Не удалось удалить устройство!")
+                        return Promise.reject( new Error("Не удалось удалить устройство!"))
                     }
                 }
             )
@@ -55,7 +77,13 @@ class DeviceService extends BaseService {
     }
 
     createItem(data) {
-        if (data.user_email && data.mac && data.type_id && data.name) {
+        const requiredFields = ["user_email", "mac", "type_id", "name"]
+        const blankFields = requiredFields.filter(item => {
+            if (!data[item]) {
+                return item
+            }
+        })
+        if (!blankFields.length) {
             return models.user.findOne({attributes: ["id"], where: {email: data.user_email}}).then(userData => {
                 return models.device.create({
                     userId: userData.id,
@@ -73,7 +101,12 @@ class DeviceService extends BaseService {
                 })
             })
         } else {
-            throw new Error("Ошибка! Не заполнены обязательные поля!")
+            return Promise.reject(blankFields.map(item => new ApiError(400, `Не заполнено обязательное поле ${item}!`, "form_data",
+                {
+                    field: item,
+                    required: true
+                }
+            )))
         }
     }
 }
